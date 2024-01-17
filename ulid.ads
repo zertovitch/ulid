@@ -4,7 +4,7 @@
 --
 --  Specification of ULID can be found here: https://github.com/ulid/spec .
 --
---  An ULID is a combination of 48-bit time stamp (most significant part)
+--  A ULID is a combination of 48-bit time stamp (most significant part)
 --  and a 80-bit random number (least significant part),
 --  totalling 128 bits, that is 16 bytes (octets).
 --
@@ -47,7 +47,7 @@ package ULID is
   function Encode (Code : ULID_Number) return String;
 
   --  The decentralized pseudo-random generator allows for concurrent
-  --  calls (several tasks calling `Generate` at the same time).
+  --  calls (several Ada tasks calling `Generate` at the same time).
   --
   type Random_Generator is limited private;
 
@@ -55,18 +55,21 @@ package ULID is
 
   procedure Reset (Generator : Random_Generator; Seed : Integer);
 
+  --------------------------------------------------------------------
+  --  The `Generate` function is task-safe (hence, the `Generator`  --
+  --  parameter), and you can optionally set a time zone offset.    --
+  --------------------------------------------------------------------
+  --
   function Generate
     (Generator   : Random_Generator;
      Leap_Second : Boolean := False;
      Offset      : Ada.Calendar.Time_Zones.Time_Offset := 0)
   return ULID_Number;
 
-  --------------------------------------------------
-  --  This is main function of the ULID package:  --
-  --  return a ULID code as a string.             --
-  --  It is task-safe and you can optionally      --
-  --  set a time zone offset.                     --
-  --------------------------------------------------
+  ------------------------------------------------------
+  --  This is the main function of the ULID package:  --
+  --  return a ULID code as a string.                 --
+  ------------------------------------------------------
   --
   function Generate
     (Generator   : Random_Generator;

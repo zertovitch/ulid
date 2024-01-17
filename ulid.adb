@@ -3,11 +3,12 @@ with Ada.Calendar.Formatting;
 package body ULID is
 
   function Encode (Code : ULID_Number) return String is
-    --  Crockford's Base32:
+    --  Crockford's Base32 (5 bits per symbol):
     crockford : constant String := "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
     result : String (1 .. 26);
-    --  ^ The first 10 characters contain a time information,
-    --    the 16 others represent a random number.
+    --  ^ The first 10 characters contain a time information (50 bits,
+    --    of them 48 are used); the 16 other characters represent a random
+    --    number (80 bits).
     x : ULID_Number := Code;
   begin
     for c of reverse result loop
