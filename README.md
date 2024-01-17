@@ -2,6 +2,10 @@
 
 Implementation of [ULID](https://github.com/ulid/spec/blob/master/README.md) in Ada.
 
+In a nutshell, a ULID is a combination of 48-bit time stamp (most significant part)
+and a 80-bit random number (least significant part),
+totalling 128 bits, that is 16 bytes (octets).
+
 ## Usage
 
 The package **`ULID`** provides two functions `Generate`.
@@ -23,12 +27,14 @@ procedure ULID_Test is
 begin
   Reset (gen);  --  Randomize
   for i in 1 .. 10 loop
-    Put_Line (Generate (gen));
+    Put_Line (ULID.Generate (gen));
   end loop;
   Put ("Press Return");
   Skip_Line;
 end ULID_Test;
 ```
+
+With AdaCore's GNAT you can build and run the test using the **ulid.gpr** project file.
 
 ## License
 

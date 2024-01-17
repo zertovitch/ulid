@@ -3,6 +3,7 @@
 --  ULID = Universally Unique Lexicographically Sortable Identifier
 --
 --  Specification of ULID can be found here: https://github.com/ulid/spec .
+--
 --  An ULID is a combination of 48-bit time stamp (most significant part)
 --  and a 80-bit random number (least significant part),
 --  totalling 128 bits, that is 16 bytes (octets).
