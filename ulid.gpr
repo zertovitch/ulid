@@ -1,0 +1,37 @@
+--  This is a GNAT, GCC or GNAT Studio project file
+--  for the ULID project:
+--
+--      github:        https://github.com/zertovitch/ulid
+--
+--  Build me with "gprbuild -P ulid", or "gnatmake -P ulid",
+--  or open me with GNAT Studio.
+--  
+project ULID is
+
+   for Main use ("ulid_test.adb");
+   for Source_Dirs use (".");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+   for Create_Missing_Dirs use "True";  --  Flips by default the "-p" switch
+
+   Common_Compiler_Options :=
+     ("-gnatwa",                        --  Warnings switches (a:turn on all info/warnings marked with +)
+      "-gnatwh",                        --  Warnings switches (h:turn on warnings for hiding declarations)
+      "-gnatwcijkmopruvz.c.p.t.w.x",    --  Warnings switches (run "gnatmake" for full list)
+      "-gnatf",   --  Full errors. Verbose details, all undefined references
+      "-gnatq",   --  Don't quit, try semantics, even if parse errors
+      "-gnatQ",   --  Don't quit, write ali/tree file even if compile errors
+      "-g");      --  Generate debugging information
+
+   Style_Checks := 
+     ("-gnatyaknpr",  --  Style: check all casings: a:attribute, k:keywords, n:package Standard identifiers, p:pragma, r:identifier references
+      "-gnatybfhiu",  --  Style: check b:no blanks at end of lines, f:no ff/vtabs, h: no htabs, i:if-then layout, u:no unnecessary blank lines
+      "-gnatyx",      --  Style: check x:no extra parens
+      "-gnatye",      --  Style: check e:end/exit labels present
+      "-gnatytc");    --  Style: check t:token separation rules, c:comment format (two spaces)
+
+   package Compiler is
+      for Default_Switches ("ada") use Common_Compiler_Options & Style_Checks;
+   end Compiler;
+
+end ULID;
