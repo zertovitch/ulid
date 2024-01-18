@@ -4,9 +4,9 @@
 --
 --  Specification of ULID can be found here: https://github.com/ulid/spec .
 --
---  A ULID is a combination of 48-bit time stamp (most significant part)
---  and a 80-bit random number (least significant part),
---  totalling 128 bits, that is 16 bytes (octets).
+--  A ULID is a combination of 48-bit time stamp (most significant part),
+--  with a millisecond accuracy, and a 80-bit random number
+--  (least significant part), totalling 128 bits, that is 16 bytes (octets).
 --
 --  Legal licensing note:
 --
@@ -66,10 +66,11 @@ package ULID is
      Offset      : Ada.Calendar.Time_Zones.Time_Offset := 0)
   return ULID_Number;
 
-  ------------------------------------------------------
-  --  This is the main function of the ULID package:  --
-  --  return a ULID code as a string.                 --
-  ------------------------------------------------------
+  -------------------------------------------------------
+  --  This is the main function of the ULID package:   --
+  --  return a ULID code as a string in its canonical  --
+  --  form (Base32, Crockford variant).                --
+  -------------------------------------------------------
   --
   function Generate
     (Generator   : Random_Generator;
