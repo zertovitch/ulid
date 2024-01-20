@@ -80,4 +80,15 @@ package body ULID is
     end if;
   end Generate_Monotonic;
 
+  function Network_Byte_Order (Code : ULID_Number) return Byte_Array is
+    result : Byte_Array;
+    rest : ULID_Number := Code;
+  begin
+    for i in reverse result'Range loop
+      result (i) := Byte (rest and 255);
+      rest := rest / 256;
+    end loop;
+    return result;
+  end Network_Byte_Order;
+
 end ULID;

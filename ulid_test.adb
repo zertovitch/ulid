@@ -30,6 +30,26 @@ procedure ULID_Test is
        iterations'Image);
   end Check_Monotonicity;
 
+  procedure Check_Network_Byte_order is
+    number, check : ULID_Number;
+    bytes : Byte_Array;
+    gen : Random_Generator;
+  begin
+    --  Trivial, but we still check it...
+    for i in 1 .. 10 loop
+      number := ULID.Generate (gen);
+      bytes := Network_Byte_Order (number);
+      check := 0;
+      for element of bytes loop
+        --  Most Significant Byte first
+        check := check * 256 + ULID_Number(element);
+      end loop;
+      if number /= check then
+        raise Program_Error with "Hey, check that Big-endian code!";
+      end if;
+    end loop;
+  end Check_Network_Byte_order;
+
   procedure Demo is
     gen : Random_Generator;
   begin
@@ -42,6 +62,7 @@ procedure ULID_Test is
   end Demo;
 
 begin
+  Check_Network_Byte_order;
   Put_Line ("Testing monotonicity:");
   Check_Monotonicity (False, "ULID.Generate . . . . .");
   Check_Monotonicity (True,  "ULID.Generate_Monotonic");

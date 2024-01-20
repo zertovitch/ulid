@@ -37,6 +37,7 @@
 
 with Ada.Calendar.Time_Zones;
 with Ada.Numerics.Discrete_Random;
+with Interfaces;
 
 package ULID is
 
@@ -81,8 +82,8 @@ package ULID is
   (Encode (Generate (Generator, Leap_Second, Offset)));
 
   ---------------------------------------------------------
-  --  Here we ensure a larger value than the previously  --
-  --  generated number.                                  --
+  --  With Generate_Monotonic we ensure a larger value   --
+  --  than the previously generated number.              --
   ---------------------------------------------------------
   --
   function Generate_Monotonic
@@ -91,6 +92,16 @@ package ULID is
      Leap_Second : Boolean := False;
      Offset      : Ada.Calendar.Time_Zones.Time_Offset := 0)
   return ULID_Number;
+
+  ------------------------------------------------------
+  --  Network Byte Order representation (big-endian)  --
+  ------------------------------------------------------
+
+  subtype Byte is Interfaces.Unsigned_8;
+
+  type Byte_Array is array (1 .. 16) of Byte;
+
+  function Network_Byte_Order (Code : ULID_Number) return Byte_Array;
 
 private
 
