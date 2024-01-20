@@ -15,7 +15,9 @@ project ULID is
    for Create_Missing_Dirs use "True";  --  Flips by default the "-p" switch
 
    Common_Compiler_Options :=
-     ("-gnatwa",                        --  Warnings switches (a:turn on all info/warnings marked with +)
+     ("-Ofast",
+      "-gnatn",
+      "-gnatwa",                        --  Warnings switches (a:turn on all info/warnings marked with +)
       "-gnatwh",                        --  Warnings switches (h:turn on warnings for hiding declarations)
       "-gnatwcijkmopruvz.c.p.t.w.x",    --  Warnings switches (run "gnatmake" for full list)
       "-gnatf",   --  Full errors. Verbose details, all undefined references
@@ -28,6 +30,7 @@ project ULID is
       "-gnatybfhiu",  --  Style: check b:no blanks at end of lines, f:no ff/vtabs, h: no htabs, i:if-then layout, u:no unnecessary blank lines
       "-gnatyx",      --  Style: check x:no extra parens
       "-gnatye",      --  Style: check e:end/exit labels present
+      "-gnatym",      --  Style: check line length <= 79 characters
       "-gnatytc");    --  Style: check t:token separation rules, c:comment format (two spaces)
 
    package Compiler is

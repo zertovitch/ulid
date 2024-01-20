@@ -12,12 +12,12 @@
 --
 --  Copyright (c) 2024 Gautier de Montmollin
 --
---  Permission is hereby granted, free of charge, to any person obtaining a copy
---  of this software and associated documentation files (the "Software"), to deal
---  in the Software without restriction, including without limitation the rights
---  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
---  copies of the Software, and to permit persons to whom the Software is
---  furnished to do so, subject to the following conditions:
+--  Permission is hereby granted, free of charge, to any person obtaining a
+--  copy of this software and associated documentation files (the "Software"),
+--  to deal in the Software without restriction, including without limitation
+--  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+--  and/or sell copies of the Software, and to permit persons to whom the
+--  Software is furnished to do so, subject to the following conditions:
 --
 --  The above copyright notice and this permission notice shall be included in
 --  all copies or substantial portions of the Software.
@@ -26,14 +26,14 @@
 --  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 --  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 --  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
---  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
---  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
---  THE SOFTWARE.
+--  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+--  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+--  DEALINGS IN THE SOFTWARE.
 --
 --  NB: this is the MIT License, as found 12-Sep-2013 on the site
 --  http://www.opensource.org/licenses/mit-license.php
 --
--------------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 with Ada.Calendar.Time_Zones;
 with Ada.Numerics.Discrete_Random;
@@ -79,6 +79,18 @@ package ULID is
   return String
   is
   (Encode (Generate (Generator, Leap_Second, Offset)));
+
+  ---------------------------------------------------------
+  --  Here we ensure a larger value than the previously  --
+  --  generated number.                                  --
+  ---------------------------------------------------------
+  --
+  function Generate_Monotonic
+    (Previous    : ULID_Number;
+     Generator   : Random_Generator;
+     Leap_Second : Boolean := False;
+     Offset      : Ada.Calendar.Time_Zones.Time_Offset := 0)
+  return ULID_Number;
 
 private
 

@@ -28,24 +28,56 @@ package body ULID is
     Random_Numbers.Reset (Random_Numbers.Generator (Generator), Seed);
   end Reset;
 
+  function Generate_Time_Part
+    (Leap_Second : Boolean;
+     Offset      : Ada.Calendar.Time_Zones.Time_Offset)
+  return ULID_Number
+  is
+    use Ada.Calendar;
+    unix_epoch : constant Time :=
+      Ada.Calendar.Formatting.Time_Of
+        (1970, 1, 1, 0.0, Leap_Second, Offset);
+    milliseconds_clock : constant ULID_Number :=
+      ULID_Number (1000.0 * (Clock - unix_epoch));
+  begin
+    return milliseconds_clock * 2 ** 80;
+  end Generate_Time_Part;
+
+  function
+    Generate_Random_Part (Generator : Random_Generator) return ULID_Number
+  is
+  begin
+    return ULID_Number
+      (Random_Numbers.Random
+        (Random_Numbers.Generator (Generator)));
+  end Generate_Random_Part;
+
   function Generate
     (Generator   : Random_Generator;
      Leap_Second : Boolean := False;
      Offset      : Ada.Calendar.Time_Zones.Time_Offset := 0)
   return ULID_Number
   is
-    random_part : constant ULID_Number :=
-      ULID_Number
-        (Random_Numbers.Random
-          (Random_Numbers.Generator (Generator)));
-    use Ada.Calendar;
-    unix_epoch : constant Time :=
-      Ada.Calendar.Formatting.Time_Of
-        (1970, 1, 1, 0.0, Leap_Second, Offset);
-    time_part : constant ULID_Number :=
-      ULID_Number (1000.0 * (Clock - unix_epoch));
+  (Generate_Time_Part (Leap_Second, Offset) +
+   Generate_Random_Part (Generator));
+
+  function Generate_Monotonic
+    (Previous    : ULID_Number;
+     Generator   : Random_Generator;
+     Leap_Second : Boolean := False;
+     Offset      : Ada.Calendar.Time_Zones.Time_Offset := 0)
+  return ULID_Number
+  is
+    mask : constant :=  (2 ** 128 - 1) - (2 ** 80 - 1);
+    old_time_part : constant ULID_Number := Previous and mask;
+    new_time_part : constant ULID_Number :=
+      Generate_Time_Part (Leap_Second, Offset);
   begin
-    return time_part * 2 ** 80 + random_part;
-  end Generate;
+    if new_time_part <= old_time_part then
+      return Previous + 1;
+    else
+      return new_time_part + Generate_Random_Part (Generator);
+    end if;
+  end Generate_Monotonic;
 
 end ULID;
