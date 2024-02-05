@@ -43,7 +43,7 @@ procedure ULID_Test is
       check := 0;
       for element of bytes loop
         --  Most Significant Byte first
-        check := check * 256 + ULID_Number(element);
+        check := check * 256 + ULID_Number (element);
       end loop;
       if number /= check then
         raise Program_Error with "Hey, check that Big-endian code!";
