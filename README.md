@@ -1,7 +1,6 @@
 # ULID-Ada
 
-Implementation of [ULID](https://github.com/ulid/spec/blob/master/README.md)
-(Universally Unique Lexicographically Sortable Identifier) in Ada.
+Implementation of [ULID](https://github.com/ulid/spec/blob/master/README.md) (Universally Unique Lexicographically Sortable Identifier) in Ada.
 
 In a nutshell, a ULID code is a combination of 48-bit time stamp (most significant part),
 with a millisecond accuracy, and a 80-bit random number (least significant part),
