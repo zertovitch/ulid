@@ -5,7 +5,7 @@ procedure ULID_Test is
 
   use Ada.Text_IO, ULID;
 
-  procedure Check_Monotonicity (monotonic : Boolean; title : String) is
+  procedure Check_Monotonicity (want_monotonic : Boolean; title : String) is
     old, current : ULID_Number;
     gen : Random_Generator;
     non_monotonic_counter : Natural := 0;
@@ -14,7 +14,7 @@ procedure ULID_Test is
     Reset (gen);  --  Randomize
     old := 0;
     for i in 1 .. iterations loop
-      if monotonic then
+      if want_monotonic then
         current := ULID.Generate_Monotonic (old, gen);
       else
         current := ULID.Generate (gen);
@@ -54,10 +54,15 @@ procedure ULID_Test is
   procedure Demo is
     gen : Random_Generator;
   begin
-    Put_Line ("Demo (just a few ULID's):");
     Reset (gen);  --  Randomize
+    Put_Line ("Demo (just a few ULID's):");
     for i in 1 .. 10 loop
       Put_Line ("  " & ULID.Generate (gen));
+    end loop;
+    New_Line;
+    Put_Line ("In usual UUID 8-4-4-4-12 format:");
+    for i in 1 .. 10 loop
+      Put_Line ("  {" & Encode_as_8_4_4_4_12 (ULID.Generate (gen)) & '}');
     end loop;
     New_Line;
   end Demo;

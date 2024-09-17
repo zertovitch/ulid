@@ -44,8 +44,14 @@ package ULID is
   type ULID_Number is mod 2 ** 128;
 
   --  Encode a number in the Base32 format (Crockford variant).
+  --  Example of output: 01J80P3NJDN0Y5YX7D05421X0G
   --
   function Encode (Code : ULID_Number) return String;
+
+  --  Encode a number in the usual UUID 8-4-4-4-12 format.
+  --  Example of output: 01920161-d64d-5a3e-589e-c45df155547b
+  --
+  function Encode_as_8_4_4_4_12 (Code : in ULID_Number) return String;
 
   --  The decentralized pseudo-random generator allows for concurrent
   --  calls (several Ada tasks calling `Generate` at the same time).
