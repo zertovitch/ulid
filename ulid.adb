@@ -2,9 +2,66 @@ with Ada.Calendar.Formatting;
 
 package body ULID is
 
+  --  Crockford's Base32 (5 bits per symbol):
+  crockford : constant String (1 .. 32) := "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+  function Decode (Text : String) return ULID_Number is
+    index : Integer;
+    reverse_crockford : array (Character) of Integer;
+    single_digit : Integer;
+    invalid : constant := -1;
+    result : ULID_Number := 0;
+  begin
+    case Text'Length is
+
+      when 26 =>
+        reverse_crockford := (others => invalid);
+        for i in crockford'Range loop
+          reverse_crockford (crockford (i)) := i - 1;
+        end loop;
+        for c of Text loop
+          single_digit := reverse_crockford (c);
+          if single_digit = invalid then
+            raise Invalid_Text
+              with "Error in Crockford's Base32 representation";
+          end if;
+          result := result * 32 + ULID_Number (single_digit);
+        end loop;
+
+      when 36 =>
+        index := Text'First;
+        for hexa_digit in 1 .. 16 loop
+          single_digit :=
+            Integer'Value ("16#" & Text (index .. index + 1) & '#');
+          index := index + 2;
+          if index <= Text'Last and then Text (index) = '-' then
+            if index not in  8 + Text'First | 13 + Text'First |
+                            18 + Text'First | 23 + Text'First
+            then
+              raise Invalid_Text
+                with "Misplaced dash in 8-4-4-4-12 representation";
+            end if;
+            index := index + 1;
+          end if;
+          result := result * 256 + ULID_Number (single_digit);
+        end loop;
+
+      when 38 =>
+        if Text (Text'First) = '{' and then Text (Text'Last) = '}' then
+          return Decode (Text (Text'First + 1 .. Text'Last - 1));
+        else
+          raise Invalid_Text
+            with "Expecting bracketed 8-4-4-4-12 format for 38 characters";
+        end if;
+
+      when others =>
+        raise Invalid_Text with "Invalid UILD / UUID text representation";
+    end case;
+
+    return result;
+  end Decode;
+
   function Encode (Code : ULID_Number) return String is
-    --  Crockford's Base32 (5 bits per symbol):
-    crockford : constant String := "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
     result : String (1 .. 26);
     --  ^ The first 10 characters contain a time information (50 bits,
     --    of them 48 are used); the 16 other characters represent a random
@@ -91,7 +148,7 @@ package body ULID is
      Offset      : Ada.Calendar.Time_Zones.Time_Offset := 0)
   return ULID_Number
   is
-    --  Mask for erasing random part:
+    --  Mask for erasing the random part:
     mask : constant :=  (2 ** 128 - 1) - (2 ** 80 - 1);
     old_time_part : constant ULID_Number := Previous and mask;
     new_time_part : constant ULID_Number :=

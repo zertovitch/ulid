@@ -43,15 +43,29 @@ package ULID is
 
   type ULID_Number is mod 2 ** 128;
 
+  --------------------------------
+  --  ULID text representation  --
+  --------------------------------
+
   --  Encode a number in the Base32 format (Crockford variant).
   --  Example of output: 01J80P3NJDN0Y5YX7D05421X0G
   --
   function Encode (Code : ULID_Number) return String;
 
   --  Encode a number in the usual UUID 8-4-4-4-12 format.
-  --  Example of output: 01920161-d64d-5a3e-589e-c45df155547b
+  --  Example of output:     01920161-d64d-5a3e-589e-c45df155547b
+  --  Often it's bracketed: {01920161-d64d-5a3e-589e-c45df155547b}
   --
   function Encode_as_8_4_4_4_12 (Code : in ULID_Number) return String;
+
+  --  Decode a ULID/UUID from Base32 format (Crockford variant)
+  --  or from "8-4-4-4-12" format, possibly bracketed with "{...}".
+  --
+  function Decode (Text : String) return ULID_Number;
+
+  ------------------------------
+  --  ULID number generation  --
+  ------------------------------
 
   --  The decentralized pseudo-random generator allows for concurrent
   --  calls (several Ada tasks calling `Generate` at the same time).
@@ -108,6 +122,8 @@ package ULID is
   type Byte_Array is array (1 .. 16) of Byte;
 
   function Network_Byte_Order (Code : ULID_Number) return Byte_Array;
+
+  Invalid_Text : exception;
 
 private
 

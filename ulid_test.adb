@@ -51,6 +51,37 @@ procedure ULID_Test is
     end loop;
   end Check_Network_Byte_Order;
 
+  procedure Check_IO is
+
+    procedure Check_Number (input : ULID_Number) is
+      output : ULID_Number;
+    begin
+      output := Decode (Encode (input));
+      if input /= output then
+        raise Program_Error;
+      end if;
+      output := Decode (Encode_as_8_4_4_4_12 (input));
+      if input /= output then
+        raise Program_Error;
+      end if;
+      output := Decode ('{' & Encode_as_8_4_4_4_12 (input) & '}');
+      if input /= output then
+        raise Program_Error;
+      end if;
+    end Check_Number;
+
+    n : ULID_Number := 1;
+
+  begin
+    --  Check 1, 12, 123, 1234, ...
+    for digit_count in 1 .. 37 loop
+      Check_Number (n);
+      n := n * 10 + (ULID_Number (digit_count + 1) rem 10);
+    end loop;
+    Check_Number (ULID_Number'First);
+    Check_Number (ULID_Number'Last);
+  end Check_IO;
+
   procedure Demo is
     gen : Random_Generator;
   begin
@@ -69,6 +100,7 @@ procedure ULID_Test is
 
 begin
   Check_Network_Byte_Order;
+  Check_IO;
   Put_Line ("Testing monotonicity:");
   Check_Monotonicity (False, "ULID.Generate . . . . .");
   Check_Monotonicity (True,  "ULID.Generate_Monotonic");
