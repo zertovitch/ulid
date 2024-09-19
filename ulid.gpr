@@ -1,7 +1,9 @@
 --  This is a GNAT, GCC or GNAT Studio project file
 --  for the ULID project:
 --
+--      alire:         https://alire.ada.dev/crates/ulid
 --      github:        https://github.com/zertovitch/ulid
+--      sourceforge:   https://sourceforge.net/projects/ulid-ada/
 --
 --  Build me with "gprbuild -P ulid", or "gnatmake -P ulid",
 --  or open me with GNAT Studio.
