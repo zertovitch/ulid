@@ -39,6 +39,18 @@ end ULID_Test;
 
 With AdaCore's GNAT you can build and run the test using the **ulid.gpr** project file.
 
+Here is an example of ULIDs in their canonical text representation (Base32):
+  01J8ZGFCTBGE4X4ZG1G5MVJQQQ
+  01J8ZGFCTB35CA4YGH0RD25R5B
+  01J8ZGFCTCZE7YSRQWAQNQHFAC
+  01J8ZGFCTC4E3PBBJ3ASYZRBB4
+
+Another bunch of ULIDs in the usual UUID/GUID 8-4-4-4-12 format:
+  {01923f07-b34c-7693-6d40-a3844156c1ae}
+  {01923f07-b34c-efde-95e7-08decfe60c07}
+  {01923f07-b34c-dc69-2ef1-2ac4b7c9bc84}
+  {01923f07-b34c-81d0-667c-43694d2f740a}
+
 ## License
 
 ULID-Ada is released under the MIT license.
